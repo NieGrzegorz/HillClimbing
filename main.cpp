@@ -5,10 +5,10 @@
 namespace hillClimbing
 {
     typedef  std::vector<int> GameBoard;
-    int countHeuristics(GameBoard board);
+    int countHeuristics(GameBoard &board);
     GameBoard resetChessBoard(int boardSize = 8);
-    void printBoard(GameBoard board);
-    GameBoard moveQueen(GameBoard board, int col, int row);
+    void printBoard(GameBoard &board);
+    GameBoard moveQueen(GameBoard &board, int col, int row);
 }
 
 int main()
@@ -67,7 +67,7 @@ namespace hillClimbing
         return board;
     }
 
-    void printBoard(GameBoard board)
+    void printBoard(GameBoard &board)
     {
         for(int it = 0; it < board.size(); ++it)
         {
@@ -86,7 +86,7 @@ namespace hillClimbing
         }
     }
 
-    int countHeuristics(GameBoard board)
+    int countHeuristics(GameBoard &board)
     {
         int retValue = 0;
         for(int it = 0; it < board.size(); ++it)
@@ -123,7 +123,7 @@ namespace hillClimbing
         return retValue;
     }
 
-    GameBoard moveQueen(GameBoard board, int col, int row)
+    GameBoard moveQueen(GameBoard &board, int col, int row)
     {
         board[row] = col;
         return board;

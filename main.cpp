@@ -15,32 +15,39 @@ int main()
 {
     int col, row;
     srand(time(NULL));
+
     auto gameBoard = hillClimbing::resetChessBoard(8);
     int heuristics = hillClimbing::countHeuristics(gameBoard);
-    auto tempBoard = gameBoard;
-
+    int resetCounter = 0;
     while(heuristics != 0)
     {
 
         int tempHeuristics;
-        hillClimbing::GameBoard res;
+        hillClimbing::GameBoard tempBoard;
 
         col = rand()%gameBoard.size();
         row = rand()%gameBoard.size();
 
 
-        res = hillClimbing::moveQueen(tempBoard, col, row);
-        tempHeuristics = hillClimbing::countHeuristics(res);
+        tempBoard = hillClimbing::moveQueen(gameBoard, col, row);
+        tempHeuristics = hillClimbing::countHeuristics(tempBoard);
 
         if(tempHeuristics < heuristics)
         {
             heuristics = tempHeuristics;
-            tempBoard = res;
+            gameBoard = tempBoard;
+            resetCounter = 0;
         }
 
+        if(resetCounter > 50)
+        {
+            gameBoard = hillClimbing::resetChessBoard(8);
+            heuristics = hillClimbing::countHeuristics(gameBoard);
+        }
+        ++resetCounter;
     }
 
-    hillClimbing::printBoard(tempBoard);
+    hillClimbing::printBoard(gameBoard);
     std::cout<<"Heuristics: "<<heuristics;
 
     return 0;
@@ -62,9 +69,9 @@ namespace hillClimbing
 
     void printBoard(GameBoard board)
     {
-        for(auto it : board)
+        for(int it = 0; it < board.size(); ++it)
         {
-            for(auto inner = 0; inner < board.size(); ++inner)
+            for(int inner = 0; inner < board.size(); ++inner)
             {
                 if(board[it] == inner)
                 {
@@ -82,9 +89,9 @@ namespace hillClimbing
     int countHeuristics(GameBoard board)
     {
         int retValue = 0;
-        for(auto it : board)
+        for(int it = 0; it < board.size(); ++it)
         {
-            for(auto inner : board)
+            for(int inner = 0; inner < board.size(); ++inner)
             {
                 if((it != inner) && (board[it] == board[inner]))
                 {
@@ -92,25 +99,25 @@ namespace hillClimbing
                 }
             }
 
-            for(auto i = it+1; i < board.size(); ++i)
+            int comp1 = 1;
+            for(int i = it+1; i < board.size(); ++i)
             {
-                int comp = 1;
 
-                if((board[it] == (board[i] + comp) || (board[it] == (board[i] - comp))))
+                if((board[i] == (board[it] + comp1)) || (board[i] == (board[it] - comp1)))
                 {
                     ++retValue;
                 }
-                ++comp;
+                ++comp1;
             }
 
-            for(auto i = it - 1; i > 0; --i)
+            int comp2 = 1;
+            for(int i = it - 1; i >= 0; --i)
             {
-                int comp = 1;
 
-                if ((board[it] == (board[i] + comp) || (board[it] == (board[i] - comp)))) {
+                if ((board[i] == (board[it] + comp2)) || (board[i] == (board[it] - comp2))) {
                     ++retValue;
                 }
-                ++comp;
+                ++comp2;
             }
         }
         return retValue;
@@ -118,7 +125,7 @@ namespace hillClimbing
 
     GameBoard moveQueen(GameBoard board, int col, int row)
     {
-        board[col] = row;
+        board[row] = col;
         return board;
     }
 }
